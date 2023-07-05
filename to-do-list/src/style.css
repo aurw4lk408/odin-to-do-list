@@ -1,0 +1,131 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto', sans-serif;
+}
+
+.header {
+    background-color: #365314;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5em;
+    padding: 1rem;
+    display: flex;
+    font-family: 'Skranji', cursive;
+}
+
+.header_1 {
+    color: #0f172a;
+}
+
+.header_2 {
+    color: #ea580c;
+}
+
+.flex_bar {
+    display: flex;
+    flex: 1;
+}
+
+h2 {
+    font-size: 2.8rem;
+    /* font-weight: 600; */
+    font-family: 'Skranji', cursive;
+}
+
+.sidebar_tasks {
+    font-size: 1.1rem;
+}
+
+.all_tasks, .today, .week, .important {
+    display: flex;
+    gap: 0.4em;
+    align-items: center;
+    margin-left: 0.5em;
+    cursor: pointer;
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+}
+
+.sidebar {
+    padding: 1.5em;
+    line-height: 3.5em;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    background-color: #cbd5e1;
+    gap: 1em;
+}
+
+.new_project, .add_project {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    margin-left: 1em;
+    cursor: pointer;
+}
+
+.project_box {
+    background-color:#cbd5e1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.project_input {
+    background-color: white;
+    border-radius: 0.2em;
+    border: transparent;
+    height: 1.8em;
+}
+
+.project_btn_container {
+    display: flex;
+    gap: 1em;
+}
+
+.project_add_btn {
+    background-color: green;
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.2em;
+    max-height: 1.8em;
+    cursor: pointer;
+}
+
+.project_cancel_btn {
+    background-color: red;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.2em;
+    max-height: 1.8em;
+    cursor: pointer;
+}
+
+.mainbar {
+    padding: 0.6em;
+    flex: 4;
+    background-color: #f1f5f9;
+}
+
+.mainbar_heading {
+    display: flex;
+    align-items: center;
+    font-family: 'Skranji', cursive;
+    height: 8rem;
+    background-color: #365314;
+    font-size: 4em;
+    padding-left: 1rem;
+    color: white;
+}
