@@ -51,10 +51,6 @@ function addSubmitButton() {
     submit_btn.addEventListener('click', () => {
         createNewTask();
         removeTaskBox();
-        createTaskDOM();
-        removeTaskButton();
-
-        //creates single dom element with task
     })
 }
 
@@ -69,7 +65,59 @@ function createNewTask() {
     console.log(taskArray);
 
     clearTaskBox();
+
+    function createTaskDOM() {
+        let currentArrayIndex = taskArray.length - 1;
+
+        const task_box = document.createElement('div');
+        const title = document.createElement('div');
+        title.textContent = `${taskArray[currentArrayIndex].title}`;
+
+        task_box.appendChild(title);
+
+        const button_container = document.createElement('div');
+        button_container.classList.add('task_button_container')
+        const details = document.createElement('div');
+        details.textContent = "details"
+
+        const trash = new Image();
+        trash.src = Trash;
+        button_container.appendChild(details);
+        button_container.appendChild(trash);
+        task_box.appendChild(button_container);
+
+        document.querySelector('.mainbar_tasks').appendChild(task_box);
+
+        console.log("create task dom was performed");
+
+        details.classList.add('task_details');
+        task_box.classList.add('task_box');
+        title.classList.add('task_title');
+        trash.classList.add('task_remove');
+        
+        function assignObjToDOM() {
+            const currentArrayIndex = taskArray.length - 1;
+            taskArray[currentArrayIndex].myElement = task_box;
+
+                function removeTaskButton() {
+                    trash.addEventListener('click', () => {
+                        const index = taskArray.findIndex(newTask => newTask.myElement === task_box);
+
+                        if (index !== -1) {
+                            const removedObject = taskArray.splice(index, 1)[0];
+                            removedObject.myElement.remove();
+                        }
+                        console.log(taskArray);
+                    })
+                }
+            removeTaskButton();
+        }
+            
+        assignObjToDOM();
+    }
+    createTaskDOM();
 }
+
 
 function clearTaskBox() {
     document.querySelector('#title').value = "";
@@ -78,35 +126,35 @@ function clearTaskBox() {
     document.querySelector('#priority').checked === "false";
 }
 
-function createTaskDOM() {
-    let currentArrayIndex = taskArray.length - 1;
+// function createTaskDOM() {
+//     let currentArrayIndex = taskArray.length - 1;
 
-    const task_box = document.createElement('div');
-    const title = document.createElement('div');
-    title.textContent = `${taskArray[currentArrayIndex].title}`;
+//     const task_box = document.createElement('div');
+//     const title = document.createElement('div');
+//     title.textContent = `${taskArray[currentArrayIndex].title}`;
 
-    task_box.appendChild(title);
+//     task_box.appendChild(title);
 
-    const button_container = document.createElement('div');
-    button_container.classList.add('task_button_container')
-    const details = document.createElement('div');
-    details.textContent = "details"
+//     const button_container = document.createElement('div');
+//     button_container.classList.add('task_button_container')
+//     const details = document.createElement('div');
+//     details.textContent = "details"
 
-    const trash = new Image();
-    trash.src = Trash;
-    button_container.appendChild(details);
-    button_container.appendChild(trash);
-    task_box.appendChild(button_container);
+//     const trash = new Image();
+//     trash.src = Trash;
+//     button_container.appendChild(details);
+//     button_container.appendChild(trash);
+//     task_box.appendChild(button_container);
 
-    document.querySelector('.mainbar_tasks').appendChild(task_box);
+//     document.querySelector('.mainbar_tasks').appendChild(task_box);
 
-    console.log("create task dom was performed");
+//     console.log("create task dom was performed");
 
-    details.classList.add('task_details');
-    task_box.classList.add('task_box');
-    title.classList.add('task_title');
-    trash.classList.add('task_remove');
-}
+//     details.classList.add('task_details');
+//     task_box.classList.add('task_box');
+//     title.classList.add('task_title');
+//     trash.classList.add('task_remove');
+// }
 
 // function addTaskInfo() {
 //     let currentArrayIndex = taskArray.length - 1;
@@ -114,18 +162,18 @@ function createTaskDOM() {
 //     document.querySelector('.task_title').textContent = `${taskArray[currentArrayIndex].title}`;
 // }
 
-function removeTaskButton() {
-    const removeTasks = document.querySelectorAll('.task_remove');
-    removeTasks.forEach((task) => {
-        task.addEventListener('click', () => {
-            const parent_div = task.parentNode;
-            parent_div.parentNode.remove();
+// function removeTaskButton() {
+//     const removeTasks = document.querySelectorAll('.task_remove');
+//     removeTasks.forEach((task) => {
+//         task.addEventListener('click', () => {
+//             const parent_div = task.parentNode;
+//             parent_div.parentNode.remove();
 
-            taskArray.splice(task.index, 1);
-            console.log(taskArray);
-        })
-    })
-}
+//             taskArray.splice(task.index, 1);
+//             console.log(taskArray);
+//         })
+//     })
+// }
 
 function removeTaskFromArray() {
     //removes the specific task from the array, 
@@ -135,9 +183,6 @@ function removeTaskFromArray() {
 let taskArray = [];
 
 function Task(title, description, dueDate, priority) {
-    function removeFromArray() {
-        
-    }
     return { title, description, dueDate, priority }
 }
 

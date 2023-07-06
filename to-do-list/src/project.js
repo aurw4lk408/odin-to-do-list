@@ -1,6 +1,7 @@
 import Dots from './dot.png'
 
 let projectArray = [];
+let turn_counter = 1;
 
 //add new project text
 export function addProjectDOM(className, text) {
@@ -17,7 +18,6 @@ export function addProjectDOM(className, text) {
     document.querySelector('.sidebar_projects').appendChild(add_project);
 }
 
-let turn_counter = 1;
 
 //add new project - turn into button
 export function addProject() {
@@ -73,7 +73,7 @@ function addProjectBtn() {
 }
 
 function addProjectArray() {
-    const project_name = document.querySelector('.project_input').value;
+    const project_name = Project(document.querySelector('.project_input').value);
     projectArray.push(project_name);
 
     console.log(projectArray);
@@ -99,4 +99,8 @@ function stopStartClick() {
     else if (turn_counter === 1) {
         document.querySelector('.add_project').style.pointerEvents = "auto";
     }
+}
+
+function Project(name) {
+    return {name};
 }
