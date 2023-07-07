@@ -1,4 +1,5 @@
 import Dots from './dot.png'
+import { addTaskButton, revealTaskBox, createTaskBox, createNewTask } from './tasks';
 
 let projectArray = [];
 let turn_counter = 1;
@@ -18,6 +19,65 @@ export function addProjectDOM(className, text) {
     document.querySelector('.sidebar_projects').appendChild(add_project);
 }
 
+function newProjectDOM(text) {
+    const add_project = document.createElement('div');
+    add_project.classList.add('new_project');
+
+    const picture = new Image();
+    picture.src = Dots;
+    add_project.appendChild(picture);
+
+    const project_text = document.createElement('p');
+    project_text.textContent = text;
+    add_project.appendChild(project_text);
+    document.querySelector('.sidebar_projects').appendChild(add_project);
+
+    addProjectArray(add_project, "text");
+    selectProject(add_project, text);
+}
+
+
+export function addProjectArray(variable, text, callback) {
+    let projectName = text;
+    const project = Project(projectName);
+    project.myElement = variable;
+
+    projectArray.push(project);
+    console.log(projectArray);
+
+    setTimeout(() => {
+        callback(project);
+    }, 2000);
+}
+        
+
+// export function addProjectArray(variable, text, createNewTask) {
+//     let projectName = text;
+//     const project = Project(projectName);
+//     project.myElement = variable;
+
+//     projectArray.push(project);
+//     console.log(projectArray);
+
+//     createNewTask(project);
+// }
+
+function selectProject(vari, txt) {
+    console.log(vari);
+    console.log(txt);
+
+    vari.addEventListener('click', () => {
+        document.querySelector('.mainbar_heading').textContent = txt;
+
+        if (!document.querySelector('.add_task_btn')) {
+            addTaskButton();
+        }
+        createTaskBox();
+        revealTaskBox();
+
+        console.log("I was clicked in selectProject");
+    });
+}
 
 //add new project - turn into button
 export function addProject() {
@@ -63,21 +123,20 @@ function addProjectBtn() {
     add_btn.addEventListener('click', () => {
         if (document.querySelector('.project_input').value !== "") {
             let projectName = document.querySelector('.project_input').value;
-            addProjectArray();
+            
             removeProjectBox('.project_box');
-            addProjectDOM("new_project", projectName);
+            newProjectDOM(projectName);
+            addProjectArray(projectName, (project) => {
+                createNewTask(project);
+              });            
+            selectProject(projectName);
+
             turn_counter++;
             stopStartClick();
         }
     })
 }
 
-function addProjectArray() {
-    const project_name = Project(document.querySelector('.project_input').value);
-    projectArray.push(project_name);
-
-    console.log(projectArray);
-}
 
 function removeProjectBox(className) {
     document.querySelector(className).remove();
@@ -102,5 +161,7 @@ function stopStartClick() {
 }
 
 function Project(name) {
-    return {name};
+    let taskArray = [];
+    
+    return {name, taskArray};
 }
