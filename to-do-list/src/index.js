@@ -10,6 +10,7 @@ function pageLoad() {
 
     addProjectDOM("add_project", "Add new project");
     addProject();
+
     addTaskButton();
     revealTaskBox();
 

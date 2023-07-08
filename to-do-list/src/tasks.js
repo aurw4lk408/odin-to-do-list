@@ -1,5 +1,6 @@
 import add from './add.png'
 import Trash from './trash.png'
+import { makeProjectArray, currentProjectIndex } from './project.js'
 
 //add new task button
 export function addTaskButton() {
@@ -50,74 +51,115 @@ function addSubmitButton() {
     const submit_btn = document.querySelector('.task_submit');
     submit_btn.addEventListener('click', () => {
         createNewTask();
+        createTaskDOM();
         removeTaskBox();
     })
 }
 
-function createNewTask() {
+export function createNewTask() {
     const title = document.querySelector('#title').value;
     const description = document.querySelector('#description').value;
     const dueDate = document.querySelector('#due_date').value;
     const priority = document.querySelector('#priority').checked;
 
     const newTask = Task(title, description, dueDate, priority);
-    taskArray.push(newTask);
-    console.log(taskArray);
+    currentProjectIndex.taskArray.push(newTask);
 
     clearTaskBox();
-
-    function createTaskDOM() {
-        let currentArrayIndex = taskArray.length - 1;
-
-        const task_box = document.createElement('div');
-        const title = document.createElement('div');
-        title.textContent = `${taskArray[currentArrayIndex].title}`;
-
-        task_box.appendChild(title);
-
-        const button_container = document.createElement('div');
-        button_container.classList.add('task_button_container')
-        const details = document.createElement('div');
-        details.textContent = "details"
-
-        const trash = new Image();
-        trash.src = Trash;
-        button_container.appendChild(details);
-        button_container.appendChild(trash);
-        task_box.appendChild(button_container);
-
-        document.querySelector('.mainbar_tasks').appendChild(task_box);
-
-        console.log("create task dom was performed");
-
-        details.classList.add('task_details');
-        task_box.classList.add('task_box');
-        title.classList.add('task_title');
-        trash.classList.add('task_remove');
-        
-        function assignObjToDOM() {
-            const currentArrayIndex = taskArray.length - 1;
-            taskArray[currentArrayIndex].myElement = task_box;
-
-                function removeTaskButton() {
-                    trash.addEventListener('click', () => {
-                        const index = taskArray.findIndex(newTask => newTask.myElement === task_box);
-
-                        if (index !== -1) {
-                            const removedObject = taskArray.splice(index, 1)[0];
-                            removedObject.myElement.remove();
-                        }
-                        console.log(taskArray);
-                    })
-                }
-            removeTaskButton();
-        }
-            
-        assignObjToDOM();
-    }
-    createTaskDOM();
 }
 
+export function createTaskDOM() {
+    let currentArrayIndex = currentProjectIndex.taskArray.length - 1;
+
+    const task_box = document.createElement('div');
+    const title = document.createElement('div');
+    title.textContent = `${currentProjectIndex.taskArray[currentArrayIndex].title}`;
+
+    task_box.appendChild(title);
+
+    const button_container = document.createElement('div');
+    button_container.classList.add('task_button_container')
+    const details = document.createElement('div');
+    details.textContent = "details"
+
+    const trash = new Image();
+    trash.src = Trash;
+    button_container.appendChild(details);
+    button_container.appendChild(trash);
+    task_box.appendChild(button_container);
+
+    document.querySelector('.mainbar_tasks').appendChild(task_box);
+
+
+    details.classList.add('task_details');
+    task_box.classList.add('task_box');
+    title.classList.add('task_title');
+    trash.classList.add('task_remove');
+    
+    function assignObjToDOM() {
+        const currentArrayIndex = currentProjectIndex.taskArray.length - 1;
+        // currentProjectIndex.taskArray[currentArrayIndex].myElement = task_box;
+
+            function removeTaskButton() {
+                trash.addEventListener('click', () => {
+                    const index = currentProjectIndex.taskArray.findIndex(newTask => newTask.myElement === task_box);
+
+                    if (index !== -1) {
+                        const removedObject = currentProjectIndex.taskArray.splice(index, 1)[0];
+                        removedObject.myElement.remove();
+                    }
+                })
+            }
+        removeTaskButton();
+    }
+        
+    assignObjToDOM();
+}
+
+export function createTaskDOMLoop(loopIndex) {
+    const task_box = document.createElement('div');
+    const title = document.createElement('div');
+    title.textContent = `${currentProjectIndex.taskArray[loopIndex].title}`;
+
+    task_box.appendChild(title);
+
+    const button_container = document.createElement('div');
+    button_container.classList.add('task_button_container')
+    const details = document.createElement('div');
+    details.textContent = "details"
+
+    const trash = new Image();
+    trash.src = Trash;
+    button_container.appendChild(details);
+    button_container.appendChild(trash);
+    task_box.appendChild(button_container);
+
+    document.querySelector('.mainbar_tasks').appendChild(task_box);
+
+
+    details.classList.add('task_details');
+    task_box.classList.add('task_box');
+    title.classList.add('task_title');
+    trash.classList.add('task_remove');
+    
+    function assignObjToDOMLoop() {
+        currentProjectIndex.taskArray[loopIndex].myElement = task_box;
+
+            function removeTaskButtonLoop() {
+                trash.addEventListener('click', () => {
+                    const index = currentProjectIndex.taskArray.findIndex(newTask => newTask.myElement === task_box);
+
+                    if (index !== -1) {
+                        const removedObject = currentProjectIndex.taskArray.splice(index, 1)[0];
+                        removedObject.myElement.remove();
+                    }
+                })
+            }
+        removeTaskButtonLoop();
+    }
+        
+    assignObjToDOMLoop();
+}
 
 function clearTaskBox() {
     document.querySelector('#title').value = "";
@@ -126,61 +168,6 @@ function clearTaskBox() {
     document.querySelector('#priority').checked === "false";
 }
 
-// function createTaskDOM() {
-//     let currentArrayIndex = taskArray.length - 1;
-
-//     const task_box = document.createElement('div');
-//     const title = document.createElement('div');
-//     title.textContent = `${taskArray[currentArrayIndex].title}`;
-
-//     task_box.appendChild(title);
-
-//     const button_container = document.createElement('div');
-//     button_container.classList.add('task_button_container')
-//     const details = document.createElement('div');
-//     details.textContent = "details"
-
-//     const trash = new Image();
-//     trash.src = Trash;
-//     button_container.appendChild(details);
-//     button_container.appendChild(trash);
-//     task_box.appendChild(button_container);
-
-//     document.querySelector('.mainbar_tasks').appendChild(task_box);
-
-//     console.log("create task dom was performed");
-
-//     details.classList.add('task_details');
-//     task_box.classList.add('task_box');
-//     title.classList.add('task_title');
-//     trash.classList.add('task_remove');
-// }
-
-// function addTaskInfo() {
-//     let currentArrayIndex = taskArray.length - 1;
-
-//     document.querySelector('.task_title').textContent = `${taskArray[currentArrayIndex].title}`;
-// }
-
-// function removeTaskButton() {
-//     const removeTasks = document.querySelectorAll('.task_remove');
-//     removeTasks.forEach((task) => {
-//         task.addEventListener('click', () => {
-//             const parent_div = task.parentNode;
-//             parent_div.parentNode.remove();
-
-//             taskArray.splice(task.index, 1);
-//             console.log(taskArray);
-//         })
-//     })
-// }
-
-function removeTaskFromArray() {
-    //removes the specific task from the array, 
-    taskArray.splice(index, 1);
-}
-
-let taskArray = [];
 
 function Task(title, description, dueDate, priority) {
     return { title, description, dueDate, priority }
