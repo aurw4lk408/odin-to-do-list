@@ -1,7 +1,7 @@
 import Dots from './dot.png'
 import { createNewTask, createTaskDOM, createTaskDOMLoop } from './tasks';
 
-let projectArray = [];
+export let projectArray = [];
 let turn_counter = 1;
 
 //add new project text
@@ -98,8 +98,6 @@ function addProjectBtn() {
     })
 }
 
-let currentProject;
-
 export let currentProjectIndex;
 
 export function makeProjectArray() {
@@ -127,6 +125,7 @@ export function makeProjectArray() {
 
         function selectProject() {
             add_project.addEventListener('click', () => {
+                document.querySelector('.mainbar_btn').classList.add('active');
                 document.querySelector('.mainbar_heading').textContent = text;
 
                 const index = projectArray.findIndex(project => project.myElement === add_project);
@@ -158,7 +157,7 @@ function renderCurrentIndexTasks () {
     }
 }
 
-function removeTasksFromScreen() {
+export function removeTasksFromScreen() {
     let tasks = document.querySelector('.mainbar_tasks');
     while (tasks.firstChild) {
         tasks.removeChild(tasks.firstChild);
