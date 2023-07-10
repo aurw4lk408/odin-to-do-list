@@ -21,7 +21,7 @@ export function selectInbox() {
 
 function createTaskDOMInboxLoop(i, j) {
     const task_box = document.createElement('div');
-    // projectArray[i].taskArray[j].myElement = task_box;
+    projectArray[i].taskArray[j].myElement = task_box;
 
     const title = document.createElement('div');
     title.textContent = `${projectArray[i].taskArray[j].title}`;
@@ -54,34 +54,27 @@ function createTaskDOMInboxLoop(i, j) {
 
             function removeTaskButtonLoop() {
                 trash.addEventListener('click', () => {
-                    projectArray[i].taskArray[j].myElement = task_box;
+                    // code is wrong here, try to figure it out later
+                    
+                    // projectArray[i].taskArray[j].myElement = task_box;
+                    // projectArray[i].taskArray[j].myElement.remove();
 
-                    projectArray[i].taskArray[j].myElement.remove();
-
-                    console.log(projectArray);
-                    projectArray[i].taskArray.splice(j, 1);
-
-                    console.log(projectArray);
-
-                    // const removedObject = projectArray[i].taskArray.splice(j, 1)[0];
-                    // removedObject.myElement.remove();
                     // console.log(projectArray);
+                    // projectArray[i].taskArray.splice(j, 1);
 
-                    // if (projectArray[i].taskArray.splice(j, 1)[0] === undefined) {
-                    //     const last = projectArray.pop();
-                    //     last.myElement.remove();
-                    // }
-                    //     else if (projectArray[i].taskArray.splice(j, 1)[0] === undefined) {
-                    //         const removedObject = projectArray[i].taskArray.splice(j, 1)[0];
-                    //         removedObject.myElement.remove();
-                    //         console.log(projectArray);
-                    //     }
+                    // console.log(projectArray);
+                    // console.log(j);
+
+                    const index = projectArray[i].taskArray.findIndex(newTask => newTask.myElement === task_box);
+                    console.log(index);
+
+                    if (index !== -1) {
+                        const removedObject = projectArray[i].taskArray.splice(index, 1)[0];
+                        removedObject.myElement.remove();
+                    }
                 })
             }
         removeTaskButtonLoop(task_box, i, j);
-    // }
-        
-    // assignObjToDOMInbox();
 }
 
 

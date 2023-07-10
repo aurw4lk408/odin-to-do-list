@@ -9,9 +9,9 @@ export function selectToday() {
         document.querySelector('.mainbar_btn').classList.remove('active');
         removeTasksFromScreen();
         
-        let todayArray = JSON.parse(JSON.stringify(projectArray));
+        let initial_todayArray = JSON.parse(JSON.stringify(projectArray));
 
-        createTodayArray(todayArray);
+        let todayArray = createTodayArray(initial_todayArray);
 
         for(let i = 0; i < todayArray.length; i++) {
             for(let j = 0; j < todayArray[i].taskArray.length; j++) {
@@ -21,34 +21,37 @@ export function selectToday() {
     })
 }
 
-function createTodayArray(todayArray) {
+function createTodayArray(initial_todayArray) {
     const currentDate = new Date().toISOString().split('T')[0];
-    for (let i = 0; i < todayArray.length; i++) {
-        for (let j = 0; j < todayArray[i].taskArray.length; j++) {
-            if (todayArray[i].taskArray[j].dueDate !== currentDate) {
-                todayArray[i].taskArray.splice(j, 1);
+    for (let i = 0; i < initial_todayArray.length; i++) {
+        for (let j = 0; j < initial_todayArray[i].taskArray.length; j++) {
+            if (initial_todayArray[i].taskArray[j].dueDate !== currentDate) {
+                delete initial_todayArray[i].taskArray[j];
             }
         }
     }
+
+    
+    let todayArray = initial_todayArray.map(project => {
+        const filteredValues = project.taskArray.filter(value => value !== undefined);
+        return { ...project, taskArray: filteredValues };
+    });
+
 
     for (let i = 0; i < todayArray.length; i++) {
         if (todayArray[i].taskArray === undefined || todayArray[i].taskArray.length === 0) {
             todayArray.splice(i, 1);
         }
     }
-
-    console.log(currentDate)
-
-    console.log(projectArray);
-    console.log(todayArray);
-
-    console.log(todayArray === projectArray);  
     
-    // return todayArray;
+    return todayArray;
 }
 
-function createTaskDOMTodayLoop(todayArray, i, j) {
+export function createTaskDOMTodayLoop(todayArray, i, j) {
     const task_box = document.createElement('div');
+    projectArray[i].taskArray[j].myElement = task_box;
+
+
     const title = document.createElement('div');
     title.textContent = `${todayArray[i].taskArray[j].title}`;
 
@@ -80,11 +83,13 @@ function createTaskDOMTodayLoop(todayArray, i, j) {
 
             function removeTaskButtonLoopToday() {
                 trash.addEventListener('click', () => {
-                    projectArray[i].taskArray[j].myElement = task_box;
+                    const index = projectArray[i].taskArray.findIndex(newTask => newTask.myElement === task_box);
+                    console.log(index);
 
-                    const removedObject = projectArray[i].taskArray.splice(j, 1)[0];
-                    removedObject.myElement.remove();
-
+                    if (index !== -1) {
+                        const removedObject = projectArray[i].taskArray.splice(index, 1)[0];
+                        removedObject.myElement.remove();
+                    }
                     // if (todayArray[i].taskArray.splice(j, 1)[0] === undefined) {
                     //     const last = todayArray.pop();
                     //     last.myElement.remove();
