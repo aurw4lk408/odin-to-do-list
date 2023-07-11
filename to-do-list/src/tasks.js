@@ -1,6 +1,7 @@
 // import add from './add.png'
 import Trash from './trash.png'
 import { makeProjectArray, currentProjectIndex, projectArray } from './project.js'
+import { v4 as uuidv4 } from 'uuid';
 
 //add new task button
 
@@ -214,6 +215,9 @@ export function createTaskDOM() {
     function assignObjToDOM() {
         const currentArrayIndex = currentProjectIndex.taskArray.length - 1;
         currentProjectIndex.taskArray[currentArrayIndex].myElement = task_box;
+        currentProjectIndex.taskArray[currentArrayIndex].id_value = uuidv4();
+
+        console.log(projectArray);
 
             function removeTaskButton() {
                 trash.addEventListener('click', () => {
@@ -374,9 +378,14 @@ function submitDetailsBoxLoop(loopIndex, box, title) {
     currentProjectIndex.taskArray[loopIndex].title = document.querySelector('#details_title').value;
     currentProjectIndex.taskArray[loopIndex].description = document.querySelector('#details_description').value;
     currentProjectIndex.taskArray[loopIndex].dueDate = document.querySelector('#details_due_date').value;
-    currentProjectIndex.taskArray[loopIndex].priority = document.querySelector('#details_priority').value;
+    
 
-    console.log(projectArray);
+    if (!document.querySelector('#details_priority').checked) {
+        currentProjectIndex.taskArray[loopIndex].priority = false;
+    }
+    else {
+        currentProjectIndex.taskArray[loopIndex] = true;
+    }
 
     updateTaskBoxLoop(loopIndex, title);
 

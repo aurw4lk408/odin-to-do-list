@@ -10,12 +10,15 @@ export function selectToday() {
         removeTasksFromScreen();
         
         let initial_todayArray = JSON.parse(JSON.stringify(projectArray));
+        const currentDate = new Date().toISOString().split('T')[0];
 
         let todayArray = createTodayArray(initial_todayArray);
 
+        console.log(todayArray);
+
         for(let i = 0; i < todayArray.length; i++) {
             for(let j = 0; j < todayArray[i].taskArray.length; j++) {
-                createTaskDOMTodayLoop(todayArray, i, j);
+                createTaskDOMTodayLoop(currentDate, todayArray, i, j);
             }
         }
     })
@@ -47,7 +50,7 @@ function createTodayArray(initial_todayArray) {
     return todayArray;
 }
 
-export function createTaskDOMTodayLoop(todayArray, i, j) {
+export function createTaskDOMTodayLoop(targetDate, todayArray, i, j) {
     const task_box = document.createElement('div');
     projectArray[i].taskArray[j].myElement = task_box;
 
@@ -62,7 +65,7 @@ export function createTaskDOMTodayLoop(todayArray, i, j) {
     const details = document.createElement('div');
     details.textContent = "details"
 
-    revealDetailsBoxTodayLoop(todayArray, i, j, details, task_box, title);
+    revealDetailsBoxTodayLoop(targetDate, todayArray, i, j, details, task_box, title);
 
     const trash = new Image();
     trash.src = Trash;
@@ -109,11 +112,11 @@ export function createTaskDOMTodayLoop(todayArray, i, j) {
 
 
 
-function revealDetailsBoxTodayLoop(todayArray, i, j, variable, box, title) {
+function revealDetailsBoxTodayLoop(targetDate, todayArray, i, j, variable, box, title) {
     const btn = variable;
     btn.addEventListener('click', () => {
         if(!document.querySelector('.details_task_box')) {
-            createDetailsDOMTodayLoop(todayArray, i, j, box, title)
+            createDetailsDOMTodayLoop(targetDate, todayArray, i, j, box, title)
             populateDetailsBoxTodayLoop(todayArray, i, j);
         }
 
@@ -141,7 +144,7 @@ function updateTaskBoxTodayLoop(todayArray, i, j, title) {
     title.textContent = `${todayArray[i].taskArray[j].title}`;
 }
 
-function createDetailsDOMTodayLoop(todayArray, i, j, afterChildDiv, title) {
+function createDetailsDOMTodayLoop(targetDate, todayArray, i, j, afterChildDiv, title) {
     if(!document.querySelector('.details_task_box')) {
         const details_task_box = document.createElement('div');
     
@@ -192,12 +195,12 @@ function createDetailsDOMTodayLoop(todayArray, i, j, afterChildDiv, title) {
     
     
         removeDetailsBoxTodayLoop(details_task_box);
-        submitDetailsBoxTodayLoop(todayArray, i, j, details_task_box, title);
+        submitDetailsBoxTodayLoop(targetDate, todayArray, i, j, details_task_box, title);
         
     }
 }
 
-function submitDetailsBoxTodayLoop(todayArray, i, j, box, title) {
+function submitDetailsBoxTodayLoop(targetDate, todayArray, i, j, box, title) {
     const details_btn = document.querySelector('.details_task_submit');
 
     details_btn.addEventListener('click', () => {
@@ -205,12 +208,50 @@ function submitDetailsBoxTodayLoop(todayArray, i, j, box, title) {
     todayArray[i].taskArray[j].title = document.querySelector('#details_title').value;
     todayArray[i].taskArray[j].description = document.querySelector('#details_description').value;
     todayArray[i].taskArray[j].dueDate = document.querySelector('#details_due_date').value;
-    todayArray[i].taskArray[j].priority = document.querySelector('#details_priority').value;
-
+        
+    if (!document.querySelector('#details_priority').checked) {
+        todayArray[i].taskArray[j].priority = false;
+    }
+    else {
+        todayArray[i].taskArray[j].priority = true;
+    }
+    
     console.log(todayArray);
 
     updateTaskBoxTodayLoop(todayArray, i, j, title);
+    updateProjectArrayDetails(todayArray, i, j);
+
+    if (todayArray[i].taskArray[j].dueDate !== targetDate) {
+        todayArray[i].taskArray.splice(j, 1);
+    }
 
     box.remove();
+    removeTasksFromScreen();
+
+    for(let i = 0; i < todayArray.length; i++) {
+        for(let j = 0; j < todayArray[i].taskArray.length; j++) {
+            createTaskDOMTodayLoop(targetDate, todayArray, i, j);
+        }
+    }
     })
+}
+
+function updateProjectArrayDetails(todayArray, i, j) {
+    for (let k = 0; k < projectArray.length; k++) {        
+        for (let l = 0; l < projectArray[k].taskArray.length; l++) {
+            // console.log(projectArray[k].taskArray[l]);
+            // console.log(todayArray[i].taskArray[j]);
+
+            // console.log(projectArray[k].taskArray[l].id_value);
+            // console.log(todayArray[i].taskArray[j].id_value);
+
+
+            if (projectArray[k].taskArray[l].id_value === todayArray[i].taskArray[j].id_value) {
+            
+                projectArray[k].taskArray[l] = todayArray[i].taskArray[j];
+
+            }
+        }
+    }
+
 }

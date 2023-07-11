@@ -175,9 +175,13 @@ function submitDetailsBoxInboxLoop(i, j, box, title) {
     projectArray[i].taskArray[j].title = document.querySelector('#details_title').value;
     projectArray[i].taskArray[j].description = document.querySelector('#details_description').value;
     projectArray[i].taskArray[j].dueDate = document.querySelector('#details_due_date').value;
-    projectArray[i].taskArray[j].priority = document.querySelector('#details_priority').value;
 
-    console.log(projectArray);
+    if (!document.querySelector('#details_priority').checked) {
+        projectArray[i].taskArray[j].priority = false;
+    }
+    else {
+        projectArray[i].taskArray[j].priority = true;
+    }
 
     updateTaskBoxInboxLoop(i, j, title);
 
