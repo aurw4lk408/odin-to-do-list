@@ -52,7 +52,7 @@ function createTodayArray(initial_todayArray) {
 
 export function createTaskDOMTodayLoop(targetDate, todayArray, i, j) {
     const task_box = document.createElement('div');
-    projectArray[i].taskArray[j].myElement = task_box;
+    todayArray[i].taskArray[j].myElement = task_box;
 
 
     const title = document.createElement('div');
@@ -64,11 +64,15 @@ export function createTaskDOMTodayLoop(targetDate, todayArray, i, j) {
     button_container.classList.add('task_button_container')
     const details = document.createElement('div');
     details.textContent = "details"
+    const date_btn = document.createElement('div');
+    date_btn.classList.add('task_date');
+    date_btn.textContent = `${todayArray[i].taskArray[j].dueDate}`;
 
-    revealDetailsBoxTodayLoop(targetDate, todayArray, i, j, details, task_box, title);
+    revealDetailsBoxTodayLoop(targetDate, todayArray, i, j, details, task_box, title, date_btn);
 
     const trash = new Image();
     trash.src = Trash;
+    button_container.appendChild(date_btn);
     button_container.appendChild(details);
     button_container.appendChild(trash);
     task_box.appendChild(button_container);
@@ -86,13 +90,22 @@ export function createTaskDOMTodayLoop(targetDate, todayArray, i, j) {
 
             function removeTaskButtonLoopToday() {
                 trash.addEventListener('click', () => {
-                    const index = projectArray[i].taskArray.findIndex(newTask => newTask.myElement === task_box);
-                    console.log(index);
+                    const index = todayArray[i].taskArray.findIndex(newTask => newTask.myElement === task_box);
 
                     if (index !== -1) {
-                        const removedObject = projectArray[i].taskArray.splice(index, 1)[0];
+                        const removedObject = todayArray[i].taskArray.splice(index, 1)[0];
+
+                        for (let i = 0; i < projectArray.length; i++) {
+                            for (let j = 0; j < projectArray[i].taskArray.length; j++) {
+                                if (removedObject.id_value === projectArray[i].taskArray[j].id_value) {
+                                    projectArray[i].taskArray.splice(j, 1);
+                                }
+                            }
+                        }
+
                         removedObject.myElement.remove();
                     }
+
                     // if (todayArray[i].taskArray.splice(j, 1)[0] === undefined) {
                     //     const last = todayArray.pop();
                     //     last.myElement.remove();
@@ -112,25 +125,29 @@ export function createTaskDOMTodayLoop(targetDate, todayArray, i, j) {
 
 
 
-function revealDetailsBoxTodayLoop(targetDate, todayArray, i, j, variable, box, title) {
+function revealDetailsBoxTodayLoop(targetDate, todayArray, i, j, variable, box, title, date_btn) {
     const btn = variable;
     btn.addEventListener('click', () => {
         if(!document.querySelector('.details_task_box')) {
-            createDetailsDOMTodayLoop(targetDate, todayArray, i, j, box, title)
-            populateDetailsBoxTodayLoop(todayArray, i, j);
+            createDetailsDOMTodayLoop(targetDate, todayArray, i, j, box, title, date_btn);
+            populateDetailsBoxTodayLoop(todayArray, i, j, box);
         }
 
         console.log(todayArray);
     })
 }
 
-function populateDetailsBoxTodayLoop(todayArray, i, j) {
+function populateDetailsBoxTodayLoop(todayArray, i, j, task_box) {
     // let currentArrayIndex = currentProjectIndex.taskArray.length - 1;
-        document.querySelector('#details_title').value = `${todayArray[i].taskArray[j].title}`;
-        document.querySelector('#details_description').value = `${todayArray[i].taskArray[j].description}`;
-        document.querySelector('#details_due_date').value = `${todayArray[i].taskArray[j].dueDate}`;
-        document.querySelector('#details_priority').value = `${todayArray[i].taskArray[j].priority}`;
+    const index = todayArray[i].taskArray.findIndex(task => task.myElement === task_box)
+    if (index !== -1) {
+        document.querySelector('#details_title').value = `${todayArray[i].taskArray[index].title}`;
+        document.querySelector('#details_description').value = `${todayArray[i].taskArray[index].description}`;
+        document.querySelector('#details_due_date').value = `${todayArray[i].taskArray[index].dueDate}`;
+        document.querySelector('#details_priority').value = `${todayArray[i].taskArray[index].priority}`;
+    }
 }
+
 
 function removeDetailsBoxTodayLoop(box) {
     const btn = document.querySelector('.details_close_button');
@@ -140,11 +157,11 @@ function removeDetailsBoxTodayLoop(box) {
 }
 
 
-function updateTaskBoxTodayLoop(todayArray, i, j, title) {
-    title.textContent = `${todayArray[i].taskArray[j].title}`;
+function updateTaskBoxTodayLoop(todayArray, i, index, title) {
+    title.textContent = `${todayArray[i].taskArray[index].title}`;
 }
 
-function createDetailsDOMTodayLoop(targetDate, todayArray, i, j, afterChildDiv, title) {
+function createDetailsDOMTodayLoop(targetDate, todayArray, i, j, afterChildDiv, title, date_btn) {
     if(!document.querySelector('.details_task_box')) {
         const details_task_box = document.createElement('div');
     
@@ -195,37 +212,40 @@ function createDetailsDOMTodayLoop(targetDate, todayArray, i, j, afterChildDiv, 
     
     
         removeDetailsBoxTodayLoop(details_task_box);
-        submitDetailsBoxTodayLoop(targetDate, todayArray, i, j, details_task_box, title);
+        submitDetailsBoxTodayLoop(targetDate, todayArray, i, j, afterChildDiv, details_task_box, title, date_btn);
         
     }
 }
 
-function submitDetailsBoxTodayLoop(targetDate, todayArray, i, j, box, title) {
+function submitDetailsBoxTodayLoop(targetDate, todayArray, i, j, task_box, details_box, title, date_btn) {
     const details_btn = document.querySelector('.details_task_submit');
 
     details_btn.addEventListener('click', () => {
-     
-    todayArray[i].taskArray[j].title = document.querySelector('#details_title').value;
-    todayArray[i].taskArray[j].description = document.querySelector('#details_description').value;
-    todayArray[i].taskArray[j].dueDate = document.querySelector('#details_due_date').value;
-        
-    if (!document.querySelector('#details_priority').checked) {
-        todayArray[i].taskArray[j].priority = false;
-    }
-    else {
-        todayArray[i].taskArray[j].priority = true;
+    
+    const index = todayArray[i].taskArray.findIndex(task => task.myElement === task_box)
+    if (index !== -1) {
+        todayArray[i].taskArray[index].title = document.querySelector('#details_title').value;
+        todayArray[i].taskArray[index].description = document.querySelector('#details_description').value;
+        todayArray[i].taskArray[index].dueDate = document.querySelector('#details_due_date').value;
+        if (!document.querySelector('#details_priority').checked) {
+            todayArray[i].taskArray[index].priority = false;
+        }
+        else {
+            todayArray[i].taskArray[index].priority = true;
+        }
     }
     
-    console.log(todayArray);
+    updateTaskBoxTodayLoop(todayArray, i, index, title);
+    updateProjectArrayDetails(todayArray, i, index);
 
-    updateTaskBoxTodayLoop(todayArray, i, j, title);
-    updateProjectArrayDetails(todayArray, i, j);
+    date_btn.textContent = `${todayArray[i].taskArray[index].dueDate}`;
 
-    if (todayArray[i].taskArray[j].dueDate !== targetDate) {
-        todayArray[i].taskArray.splice(j, 1);
+    if (todayArray[i].taskArray[index].dueDate !== targetDate) {
+        todayArray[i].taskArray.splice(index, 1);
     }
 
-    box.remove();
+
+    details_box.remove();
     removeTasksFromScreen();
 
     for(let i = 0; i < todayArray.length; i++) {
@@ -236,7 +256,7 @@ function submitDetailsBoxTodayLoop(targetDate, todayArray, i, j, box, title) {
     })
 }
 
-function updateProjectArrayDetails(todayArray, i, j) {
+function updateProjectArrayDetails(todayArray, i, index) {
     for (let k = 0; k < projectArray.length; k++) {        
         for (let l = 0; l < projectArray[k].taskArray.length; l++) {
             // console.log(projectArray[k].taskArray[l]);
@@ -246,9 +266,9 @@ function updateProjectArrayDetails(todayArray, i, j) {
             // console.log(todayArray[i].taskArray[j].id_value);
 
 
-            if (projectArray[k].taskArray[l].id_value === todayArray[i].taskArray[j].id_value) {
+            if (projectArray[k].taskArray[l].id_value === todayArray[i].taskArray[index].id_value) {
             
-                projectArray[k].taskArray[l] = todayArray[i].taskArray[j];
+                projectArray[k].taskArray[l] = todayArray[i].taskArray[index];
 
             }
         }

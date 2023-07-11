@@ -176,6 +176,7 @@ h2 {
 .task_box {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 0.5rem 1.5rem;
     background-color: #cbd5e1;
     border-radius: 0.4em;
@@ -201,7 +202,16 @@ h2 {
 
 .task_button_container {
     display: flex;
+    align-items: center;
     gap: 0.8em;
+}
+
+.task_date {
+    cursor: pointer;
+    border: 0.2rem solid greenyellow;
+    font-size: 0.9rem;
+    border-radius: 0.4rem;
+    padding: 0.4rem;
 }
 
 .task_details {

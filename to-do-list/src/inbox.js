@@ -32,11 +32,15 @@ function createTaskDOMInboxLoop(i, j) {
     button_container.classList.add('task_button_container')
     const details = document.createElement('div');
     details.textContent = "details"
+    const date_btn = document.createElement('div');
+    date_btn.classList.add('task_date');
+    date_btn.textContent = `${projectArray[i].taskArray[j].dueDate}`;
 
-    revealDetailsBoxInboxLoop(i, j, details, task_box, title);
+    revealDetailsBoxInboxLoop(i, details, task_box, title, date_btn);
 
     const trash = new Image();
     trash.src = Trash;
+    button_container.appendChild(date_btn);
     button_container.appendChild(details);
     button_container.appendChild(trash);
     task_box.appendChild(button_container);
@@ -74,29 +78,31 @@ function createTaskDOMInboxLoop(i, j) {
                     }
                 })
             }
-        removeTaskButtonLoop(task_box, i, j);
+        removeTaskButtonLoop(task_box, i);
 }
 
 
 
-function revealDetailsBoxInboxLoop(i, j, variable, box, title) {
+function revealDetailsBoxInboxLoop(i, variable, box, title, date_btn) {
     const btn = variable;
     btn.addEventListener('click', () => {
         if(!document.querySelector('.details_task_box')) {
-            createDetailsDOMInboxLoop(i, j, box, title)
-            populateDetailsBoxInboxLoop(i, j);
+            createDetailsDOMInboxLoop(i, box, title, date_btn)
+            populateDetailsBoxInboxLoop(i, box);
         }
 
         console.log(projectArray);
     })
 }
 
-function populateDetailsBoxInboxLoop(i, j) {
-    // let currentArrayIndex = currentProjectIndex.taskArray.length - 1;
-        document.querySelector('#details_title').value = `${projectArray[i].taskArray[j].title}`;
-        document.querySelector('#details_description').value = `${projectArray[i].taskArray[j].description}`;
-        document.querySelector('#details_due_date').value = `${projectArray[i].taskArray[j].dueDate}`;
-        document.querySelector('#details_priority').value = `${projectArray[i].taskArray[j].priority}`;
+function populateDetailsBoxInboxLoop(i, task_box) {
+    const index = projectArray[i].taskArray.findIndex(newTask => newTask.myElement === task_box);
+    if (index !== -1) {
+        document.querySelector('#details_title').value = `${projectArray[i].taskArray[index].title}`;
+        document.querySelector('#details_description').value = `${projectArray[i].taskArray[index].description}`;
+        document.querySelector('#details_due_date').value = `${projectArray[i].taskArray[index].dueDate}`;
+        document.querySelector('#details_priority').value = `${projectArray[i].taskArray[index].priority}`;
+    }
 }
 
 function removeDetailsBoxInboxLoop(box) {
@@ -107,11 +113,11 @@ function removeDetailsBoxInboxLoop(box) {
 }
 
 
-function updateTaskBoxInboxLoop(i, j, title) {
-    title.textContent = `${projectArray[i].taskArray[j].title}`;
+function updateTaskBoxInboxLoop(i, index, title) {
+    title.textContent = `${projectArray[i].taskArray[index].title}`;
 }
 
-function createDetailsDOMInboxLoop(i, j, afterChildDiv, title) {
+function createDetailsDOMInboxLoop(i, afterChildDiv, title, date_btn) {
     if(!document.querySelector('.details_task_box')) {
         const details_task_box = document.createElement('div');
     
@@ -162,29 +168,33 @@ function createDetailsDOMInboxLoop(i, j, afterChildDiv, title) {
     
     
         removeDetailsBoxInboxLoop(details_task_box);
-        submitDetailsBoxInboxLoop(i, j, details_task_box, title);
+        submitDetailsBoxInboxLoop(i, afterChildDiv, details_task_box, title, date_btn);
         
     }
 }
 
-function submitDetailsBoxInboxLoop(i, j, box, title) {
+function submitDetailsBoxInboxLoop(i, task_box, details_box, title, date_btn) {
     const details_btn = document.querySelector('.details_task_submit');
 
     details_btn.addEventListener('click', () => {
-     
-    projectArray[i].taskArray[j].title = document.querySelector('#details_title').value;
-    projectArray[i].taskArray[j].description = document.querySelector('#details_description').value;
-    projectArray[i].taskArray[j].dueDate = document.querySelector('#details_due_date').value;
-
-    if (!document.querySelector('#details_priority').checked) {
-        projectArray[i].taskArray[j].priority = false;
+    
+    const index = projectArray[i].taskArray.findIndex(newTask => newTask.myElement === task_box);
+    if (index !== -1) {
+        projectArray[i].taskArray[index].title = document.querySelector('#details_title').value;
+        projectArray[i].taskArray[index].description = document.querySelector('#details_description').value;
+        projectArray[i].taskArray[index].dueDate = document.querySelector('#details_due_date').value;
+        if (!document.querySelector('#details_priority').checked) {
+            projectArray[i].taskArray[index].priority = false;
+        }
+        else {
+            projectArray[i].taskArray[index].priority = true;
+        }
     }
-    else {
-        projectArray[i].taskArray[j].priority = true;
-    }
 
-    updateTaskBoxInboxLoop(i, j, title);
 
-    box.remove();
+    date_btn.textContent = `${projectArray[i].taskArray[index].dueDate}`;
+    updateTaskBoxInboxLoop(i, index, title);
+
+    details_box.remove();
     })
 }
