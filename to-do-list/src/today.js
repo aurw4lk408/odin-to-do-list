@@ -66,6 +66,11 @@ export function createTaskDOMTodayLoop(targetDate, todayArray, i, j) {
     button_container.classList.add('task_button_container')
     const details = document.createElement('div');
     details.textContent = "details"
+    const pencil = new Image();
+    pencil.src = Pencil;
+    pencil.classList.add('pencil');
+    details.appendChild(pencil);
+
     const date_btn = document.createElement('div');
     date_btn.classList.add('task_date');
     date_btn.textContent = `${todayArray[i].taskArray[j].dueDate}`;

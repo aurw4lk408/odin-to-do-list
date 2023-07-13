@@ -2,6 +2,7 @@
 import Trash from './trash.png'
 import empty_star from './emptyStar.png'
 import FullStar from './fullStar.png'
+import Pencil from './pencil.png'
 import { currentProjectIndex, projectArray } from './project.js'
 import { v4 as uuidv4 } from 'uuid';
 
@@ -201,7 +202,10 @@ export function createTaskDOM() {
     const button_container = document.createElement('div');
     button_container.classList.add('task_button_container');
     const details = document.createElement('div');
-    details.textContent = "details";
+    const pencil = new Image();
+    pencil.src = Pencil;
+    pencil.classList.add('pencil');
+    details.appendChild(pencil);
 
     const date_btn = document.createElement('div');
     date_btn.classList.add('task_date');
@@ -229,19 +233,17 @@ export function createTaskDOM() {
     }
 
     star.addEventListener('click', () => {
-        if (currentProjectIndex.taskArray[currentArrayIndex].priority === true) {
+        const index = currentProjectIndex.taskArray.findIndex(newTask => newTask.myElement === task_box);
+
+        if (currentProjectIndex.taskArray[index].priority === true) {
             star.removeChild(fullStar);
             star.appendChild(emptyStar);
-            currentProjectIndex.taskArray[currentArrayIndex].priority = false;
-
-            console.log(currentProjectIndex.taskArray[currentArrayIndex]);
+            currentProjectIndex.taskArray[index].priority = false;
         }
         else {
             star.removeChild(emptyStar);
             star.appendChild(fullStar);
-            currentProjectIndex.taskArray[currentArrayIndex].priority = true;
-
-            console.log(currentProjectIndex.taskArray[currentArrayIndex]);
+            currentProjectIndex.taskArray[index].priority = true;
         }
     })
 
@@ -294,7 +296,11 @@ export function createTaskDOMLoop(loopIndex) {
     button_container.classList.add('task_button_container');
     
     const details = document.createElement('div');
-    details.textContent = "details";
+    const pencil = new Image();
+    pencil.src = Pencil;
+    pencil.classList.add('pencil');
+    details.appendChild(pencil);
+
     const date_btn = document.createElement('div');
     date_btn.classList.add('task_date');
     date_btn.textContent = `${currentProjectIndex.taskArray[loopIndex].dueDate}`;
@@ -321,19 +327,17 @@ export function createTaskDOMLoop(loopIndex) {
     }
 
     star.addEventListener('click', () => {
-        if (currentProjectIndex.taskArray[loopIndex].priority === true) {
+        const index = currentProjectIndex.taskArray.findIndex(newTask => newTask.myElement === task_box);
+
+        if (currentProjectIndex.taskArray[index].priority === true) {
             star.removeChild(fullStar);
             star.appendChild(emptyStar);
-            currentProjectIndex.taskArray[loopIndex].priority = false;
-
-            console.log(currentProjectIndex.taskArray[loopIndex]);
+            currentProjectIndex.taskArray[index].priority = false;
         }
         else {
             star.removeChild(emptyStar);
             star.appendChild(fullStar);
-            currentProjectIndex.taskArray[loopIndex].priority = true;
-
-            console.log(currentProjectIndex.taskArray[loopIndex]);
+            currentProjectIndex.taskArray[index].priority = true;
         }
     })
 

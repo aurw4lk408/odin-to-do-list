@@ -35,6 +35,11 @@ function createTaskDOMInboxLoop(i, j) {
     button_container.classList.add('task_button_container')
     const details = document.createElement('div');
     details.textContent = "details"
+    const pencil = new Image();
+    pencil.src = Pencil;
+    pencil.classList.add('pencil');
+    details.appendChild(pencil);
+
     const date_btn = document.createElement('div');
     date_btn.classList.add('task_date');
     date_btn.textContent = `${projectArray[i].taskArray[j].dueDate}`;
@@ -62,16 +67,18 @@ function createTaskDOMInboxLoop(i, j) {
     }
 
     star.addEventListener('click', () => {
-        if (projectArray[i].taskArray[j].priority === true) {
+        const index = projectArray[i].taskArray.findIndex(newTask => newTask.myElement === task_box);
+
+        if (projectArray[i].taskArray[index].priority === true) {
             star.removeChild(fullStar);
             star.appendChild(emptyStar);
-            projectArray[i].taskArray[j].priority = false;
+            projectArray[i].taskArray[index].priority = false;
 
         }
         else {
             star.removeChild(emptyStar);
             star.appendChild(fullStar);
-            projectArray[i].taskArray[j].priority = true;
+            projectArray[i].taskArray[index].priority = true;
 
         }
     })
