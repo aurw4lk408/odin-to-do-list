@@ -1,4 +1,6 @@
 import Dots from './dot.png'
+import Plus from './plus.png'
+import List from './list.png'
 import { createNewTask, createTaskDOM, createTaskDOMLoop } from './tasks';
 
 export let projectArray = [];
@@ -10,7 +12,8 @@ export function addProjectDOM(className, text) {
     add_project.classList.add(className);
 
     const picture = new Image();
-    picture.src = Dots;
+    picture.src = Plus;
+    picture.classList.add('plus');
     add_project.appendChild(picture);
 
     const project_text = document.createElement('p');
@@ -79,14 +82,6 @@ function addProjectBtn() {
         if (document.querySelector('.project_input').value !== "") {
             let projectName = document.querySelector('.project_input').value;
 
-            // const project = Project(projectName);
-            // project.addProjectArray();
-            // project.newProjectDOM(projectName)
-
-            // removeProjectBox('.project_box');
-            // turn_counter++;
-            // stopStartClick();
-
             const newProject = makeProjectArray();
             newProject.addProjectArray();
             newProject.newProjectDOM(projectName)
@@ -112,13 +107,26 @@ export function makeProjectArray() {
         add_project.classList.add('new_project');
     
         const picture = new Image();
-        picture.src = Dots;
-        add_project.appendChild(picture);
+        picture.src = List;
+        picture.classList.add('list');
     
         const project_text = document.createElement('p');
         project_text.textContent = text;
-        add_project.appendChild(project_text);
-        document.querySelector('.sidebar_projects').appendChild(add_project);
+
+        const project_left_container = document.createElement('div');
+        project_left_container.appendChild(picture);
+        project_left_container.appendChild(project_text);
+        project_left_container.classList.add('project_left_container');
+
+        const picture1 = new Image();
+        picture1.src = Dots;
+        picture1.classList.add('dot');
+        
+        add_project.appendChild(project_left_container);
+        add_project.appendChild(picture1);
+        document.querySelector('.sidebar_projects').insertBefore(add_project, document.querySelector('.add_project'));
+
+        // document.querySelector('.sidebar_projects').appendChild(add_project);
 
         //asign project to DOM
         project.myElement = add_project;

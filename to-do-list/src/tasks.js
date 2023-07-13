@@ -1,23 +1,8 @@
 // import add from './add.png'
 import Trash from './trash.png'
-import { makeProjectArray, currentProjectIndex, projectArray } from './project.js'
+import empty_star from './emptyStar.png'
+import { currentProjectIndex, projectArray } from './project.js'
 import { v4 as uuidv4 } from 'uuid';
-
-//add new task button
-
-// export function addTaskButton() {
-//     const add_task = document.createElement('div');
-//     add_task.classList.add("mainbar_btn");
-
-//     const picture = new Image();
-//     picture.src = add;
-//     add_task.appendChild(picture);
-
-//     const task_text = document.createElement('p');
-//     task_text.textContent = "Add new task";
-//     add_task.appendChild(task_text);
-//     document.querySelector('.mainbar_btn').appendChild(add_task);
-// }
 
 export function revealTaskBox() {
     const add_btn = document.querySelector('.mainbar_btn');
@@ -193,9 +178,9 @@ export function createTaskDOM() {
     task_box.appendChild(title);
 
     const button_container = document.createElement('div');
-    button_container.classList.add('task_button_container')
+    button_container.classList.add('task_button_container');
     const details = document.createElement('div');
-    details.textContent = "details"
+    details.textContent = "details";
 
     const date_btn = document.createElement('div');
     date_btn.classList.add('task_date');
@@ -206,6 +191,12 @@ export function createTaskDOM() {
 
     const trash = new Image();
     trash.src = Trash;
+
+    // if (currentProjectIndex.taskArray[currentArrayIndex].priority 
+    const emptyStar = new Image();
+    emptyStar.src = empty_star;
+
+    button_container.appendChild(emptyStar);
     button_container.appendChild(date_btn);
     button_container.appendChild(details);
     button_container.appendChild(trash);
@@ -218,13 +209,12 @@ export function createTaskDOM() {
     task_box.classList.add('task_box');
     title.classList.add('task_title');
     trash.classList.add('task_remove');
+    emptyStar.classList.add('empty_star');
     
     function assignObjToDOM() {
         const currentArrayIndex = currentProjectIndex.taskArray.length - 1;
         currentProjectIndex.taskArray[currentArrayIndex].myElement = task_box;
         currentProjectIndex.taskArray[currentArrayIndex].id_value = uuidv4();
-
-        console.log(projectArray);
 
             function removeTaskButton() {
                 trash.addEventListener('click', () => {
