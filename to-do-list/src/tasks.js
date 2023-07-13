@@ -20,10 +20,17 @@ export function revealTaskBox() {
 
 function removeTaskBox() {
     const remove_btn = document.querySelector('.close_button');
+    const close_btn = document.querySelector('.task_close');
     const submit_btn = document.querySelector('.task_submit');
     const overlay = document.querySelector('#overlay');
 
     remove_btn.addEventListener('click', () => {
+        const task_remove_active = document.querySelector('.task_content')
+        task_remove_active.classList.remove('active');
+        overlay.classList.remove('active');
+    })
+    
+    close_btn.addEventListener('click', () => {
         const task_remove_active = document.querySelector('.task_content')
         task_remove_active.classList.remove('active');
         overlay.classList.remove('active');
@@ -91,7 +98,6 @@ function populateDetailsBox(task_box) {
         document.querySelector('#details_title').value = `${currentProjectIndex.taskArray[index].title}`;
         document.querySelector('#details_description').value = `${currentProjectIndex.taskArray[index].description}`;
         document.querySelector('#details_due_date').value = `${currentProjectIndex.taskArray[index].dueDate}`;
-        document.querySelector('#details_priority').value = `${currentProjectIndex.taskArray[index].priority}`;
     }
 }
 
@@ -115,7 +121,6 @@ function createDetailsDOM(afterChildDiv, title, date_btn, trash, star) {
         const close_btn = document.createElement('div');
         const left_container = document.createElement('div');
         const details_duedate = document.createElement('div');
-        const details_priority = document.createElement('div');
         const details_title = document.createElement('div');
         const container = document.createElement('div');
         const submit = document.createElement('div');
@@ -126,13 +131,10 @@ function createDetailsDOM(afterChildDiv, title, date_btn, trash, star) {
     
         left_container.appendChild(details_title);
         left_container.appendChild(details_duedate);
-        left_container.appendChild(details_priority);
     
         close_btn.innerHTML = `<button class="details_close_button">&times;</button>`
         details_title.innerHTML = `<label for="details_title">Title</label>
         <input type="text" id="details_title" name="task_title">`
-        details_priority.innerHTML = `<label for="details_priority">Priority</label>
-        <input type="checkbox" id="details_priority" name="task_priority">`
         details_duedate.innerHTML = `<label for="details_due_date">Due Date</label>
         <input type="date" id="details_due_date" name="task_due_date">`
     
@@ -145,7 +147,6 @@ function createDetailsDOM(afterChildDiv, title, date_btn, trash, star) {
         details_task_box.classList.add('details_task_box');
         details_title.classList.add('details_title');
         details_duedate.classList.add('details_duedate');
-        details_priority.classList.add('details_priority');
         details_description.classList.add('details_description');
         container.classList.add('details_container');
         close_btn.classList.add('details_close_button');
@@ -173,12 +174,6 @@ function submitDetailsBox(task_box, details_box, title, date_btn, trash, star) {
         currentProjectIndex.taskArray[index].title = document.querySelector('#details_title').value;
         currentProjectIndex.taskArray[index].description = document.querySelector('#details_description').value;
         currentProjectIndex.taskArray[index].dueDate = document.querySelector('#details_due_date').value;
-        if (!document.querySelector('#details_priority').checked) {
-            currentProjectIndex.taskArray[index].priority === false;
-        }
-        else {
-            currentProjectIndex.taskArray[index].priority === true;
-        }
     }
 
     date_btn.textContent = `${currentProjectIndex.taskArray[index].dueDate}`;
@@ -396,7 +391,6 @@ function populateDetailsBoxLoop(task_box) {
         document.querySelector('#details_title').value = `${currentProjectIndex.taskArray[index].title}`;
         document.querySelector('#details_description').value = `${currentProjectIndex.taskArray[index].description}`;
         document.querySelector('#details_due_date').value = `${currentProjectIndex.taskArray[index].dueDate}`;
-        document.querySelector('#details_priority').value = `${currentProjectIndex.taskArray[index].priority}`;
     }        
 }
 
@@ -421,7 +415,6 @@ function createDetailsDOMLoop(loopIndex, afterChildDiv, title, date_btn, trash, 
         const close_btn = document.createElement('div');
         const left_container = document.createElement('div');
         const details_duedate = document.createElement('div');
-        const details_priority = document.createElement('div');
         const details_title = document.createElement('div');
         const container = document.createElement('div');
         const submit = document.createElement('div');
@@ -432,13 +425,10 @@ function createDetailsDOMLoop(loopIndex, afterChildDiv, title, date_btn, trash, 
     
         left_container.appendChild(details_title);
         left_container.appendChild(details_duedate);
-        left_container.appendChild(details_priority);
     
         close_btn.innerHTML = `<button class="details_close_button">&times;</button>`
         details_title.innerHTML = `<label for="details_title">Title</label>
         <input type="text" id="details_title" name="task_title">`
-        details_priority.innerHTML = `<label for="details_priority">Priority</label>
-        <input type="checkbox" id="details_priority" name="task_priority">`
         details_duedate.innerHTML = `<label for="details_due_date">Due Date</label>
         <input type="date" id="details_due_date" name="task_due_date">`
     
@@ -451,7 +441,6 @@ function createDetailsDOMLoop(loopIndex, afterChildDiv, title, date_btn, trash, 
         details_task_box.classList.add('details_task_box');
         details_title.classList.add('details_title');
         details_duedate.classList.add('details_duedate');
-        details_priority.classList.add('details_priority');
         details_description.classList.add('details_description');
         container.classList.add('details_container');
         close_btn.classList.add('details_close_button');
@@ -479,12 +468,6 @@ function submitDetailsBoxLoop(task_box, details_box, title, date_btn, trash, sta
         currentProjectIndex.taskArray[index].title = document.querySelector('#details_title').value;
         currentProjectIndex.taskArray[index].description = document.querySelector('#details_description').value;
         currentProjectIndex.taskArray[index].dueDate = document.querySelector('#details_due_date').value;
-        if (!document.querySelector('#details_priority').checked) {
-            currentProjectIndex.taskArray[index].priority = false;
-        }
-        else {
-            currentProjectIndex.taskArray[index] = true;
-        }
     }            
 
 

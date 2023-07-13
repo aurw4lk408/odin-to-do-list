@@ -1,6 +1,8 @@
 import { projectArray, removeTasksFromScreen } from "./project";
 import empty_star from './emptyStar.png'
 import FullStar from './fullStar.png'
+import Pencil from './pencil.png'
+
 import { addInactiveClass, removeInactiveClass } from './tasks.js';
 
 import Trash from './trash.png'
@@ -65,7 +67,6 @@ export function createTaskDOMTodayLoop(targetDate, todayArray, i, j) {
     const button_container = document.createElement('div');
     button_container.classList.add('task_button_container')
     const details = document.createElement('div');
-    details.textContent = "details"
     const pencil = new Image();
     pencil.src = Pencil;
     pencil.classList.add('pencil');
@@ -205,7 +206,6 @@ function populateDetailsBoxTodayLoop(todayArray, i, j, task_box) {
         document.querySelector('#details_title').value = `${todayArray[i].taskArray[index].title}`;
         document.querySelector('#details_description').value = `${todayArray[i].taskArray[index].description}`;
         document.querySelector('#details_due_date').value = `${todayArray[i].taskArray[index].dueDate}`;
-        document.querySelector('#details_priority').value = `${todayArray[i].taskArray[index].priority}`;
     }
 }
 
@@ -231,7 +231,6 @@ function createDetailsDOMTodayLoop(targetDate, todayArray, i, j, afterChildDiv, 
         const close_btn = document.createElement('div');
         const left_container = document.createElement('div');
         const details_duedate = document.createElement('div');
-        const details_priority = document.createElement('div');
         const details_title = document.createElement('div');
         const container = document.createElement('div');
         const submit = document.createElement('div');
@@ -242,13 +241,10 @@ function createDetailsDOMTodayLoop(targetDate, todayArray, i, j, afterChildDiv, 
     
         left_container.appendChild(details_title);
         left_container.appendChild(details_duedate);
-        left_container.appendChild(details_priority);
     
         close_btn.innerHTML = `<button class="details_close_button">&times;</button>`
         details_title.innerHTML = `<label for="details_title">Title</label>
         <input type="text" id="details_title" name="task_title">`
-        details_priority.innerHTML = `<label for="details_priority">Priority</label>
-        <input type="checkbox" id="details_priority" name="task_priority">`
         details_duedate.innerHTML = `<label for="details_due_date">Due Date</label>
         <input type="date" id="details_due_date" name="task_due_date">`
     
@@ -261,7 +257,6 @@ function createDetailsDOMTodayLoop(targetDate, todayArray, i, j, afterChildDiv, 
         details_task_box.classList.add('details_task_box');
         details_title.classList.add('details_title');
         details_duedate.classList.add('details_duedate');
-        details_priority.classList.add('details_priority');
         details_description.classList.add('details_description');
         container.classList.add('details_container');
         close_btn.classList.add('details_close_button');
@@ -290,12 +285,6 @@ function submitDetailsBoxTodayLoop(targetDate, todayArray, i, j, task_box, detai
         todayArray[i].taskArray[index].title = document.querySelector('#details_title').value;
         todayArray[i].taskArray[index].description = document.querySelector('#details_description').value;
         todayArray[i].taskArray[index].dueDate = document.querySelector('#details_due_date').value;
-        if (!document.querySelector('#details_priority').checked) {
-            todayArray[i].taskArray[index].priority = false;
-        }
-        else {
-            todayArray[i].taskArray[index].priority = true;
-        }
     }
     
     updateTaskBoxTodayLoop(todayArray, i, index, title);
