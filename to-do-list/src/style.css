@@ -50,7 +50,7 @@ h2 {
     border-radius: 0.4rem;
 }
 
-.empty_star:hover, .task_remove:hover, .task_details:hover, .all_tasks:hover, .today:hover, .week:hover, .important:hover, .add_project:hover, .project_left_container:hover, .dot:hover {
+.star:hover, .task_remove:hover, .task_details:hover, .all_tasks:hover, .today:hover, .week:hover, .important:hover, .add_project:hover, .project_left_container:hover, .dot:hover {
     background-color:#abb2ba;
     transition: 200ms ease-in-out;
 }
@@ -186,6 +186,10 @@ h2 {
     transform: scale(1);
 }
 
+.mainbar_btn.inactive, .task_remove.inactive, .star.inactive {
+    pointer-events: none;
+}
+
 .mainbar_tasks {
     display: flex;
     flex-direction: column;
@@ -249,7 +253,7 @@ h2 {
     border-radius: 0.4rem;
 }
 
-.empty_star, .task_remove, .list, .plus, .dot {
+.task_remove, .list, .plus, .dot {
     cursor: pointer;
     height: 20px;
     width: 20px;
@@ -257,13 +261,19 @@ h2 {
     border-radius: 0.4rem;
 }
 
-.empty_star {
-    height: 30px;
-    width: 30px;
+.star {
+    cursor: pointer;
+    padding: 0.3rem;
+    border-radius: 0.4rem;
+}
+
+.empty_star, .full_star {
+    height: 25px;
+    width: 25px;
 }
 
 .task_remove {
-    padding: 0.6rem;
+    padding: 0.5rem;
 }
 
 .dot {

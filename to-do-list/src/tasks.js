@@ -1,6 +1,7 @@
 // import add from './add.png'
 import Trash from './trash.png'
 import empty_star from './emptyStar.png'
+import FullStar from './fullStar.png'
 import { currentProjectIndex, projectArray } from './project.js'
 import { v4 as uuidv4 } from 'uuid';
 
@@ -56,14 +57,30 @@ export function createNewTask() {
     clearTaskBox();
 }
 
-function revealDetailsBox(variable, box, title, date_btn) {
+function revealDetailsBox(variable, box, title, date_btn, trash, star) {
     const btn = variable;
     btn.addEventListener('click', () => {
         if(!document.querySelector('.details_task_box')) {
-            createDetailsDOM(box, title, date_btn)
+            createDetailsDOM(box, title, date_btn, trash, star)
             populateDetailsBox(box);
+
+            addInactiveClass(trash, star);
         }
     })
+}
+
+export function addInactiveClass(trash, star) {
+    document.querySelector('.mainbar_btn').classList.add('inactive');
+
+    trash.style.pointerEvents = "none";
+    star.style.pointerEvents = "none";
+}
+
+export function removeInactiveClass(trash, star) {
+    document.querySelector('.mainbar_btn').classList.remove('inactive');
+
+    trash.style.pointerEvents = "auto";
+    star.style.pointerEvents = "auto";
 }
 
 function populateDetailsBox(task_box) {
@@ -77,10 +94,12 @@ function populateDetailsBox(task_box) {
     }
 }
 
-export function removeDetailsBox(box) {
+export function removeDetailsBox(box, trash, star) {
     const btn = document.querySelector('.details_close_button');
     btn.addEventListener('click', () => {
         box.remove();
+
+        removeInactiveClass(trash, star);
     })
 }
 
@@ -88,7 +107,7 @@ function updateTaskBox(index, title) {
     title.textContent = `${currentProjectIndex.taskArray[index].title}`;
 }
 
-function createDetailsDOM(afterChildDiv, title, date_btn) {
+function createDetailsDOM(afterChildDiv, title, date_btn, trash, star) {
     if(!document.querySelector('.details_task_box')) {
         const details_task_box = document.createElement('div');
     
@@ -138,13 +157,13 @@ function createDetailsDOM(afterChildDiv, title, date_btn) {
         parentDiv.insertBefore(details_task_box, afterChildDiv.nextSibling);
     
     
-        removeDetailsBox(details_task_box);
-        submitDetailsBox(afterChildDiv, details_task_box, title, date_btn);
+        removeDetailsBox(details_task_box, trash, star);
+        submitDetailsBox(afterChildDiv, details_task_box, title, date_btn, trash, star);
         
     }
 }
 
-function submitDetailsBox(task_box, details_box, title, date_btn) {
+function submitDetailsBox(task_box, details_box, title, date_btn, trash, star) {
     const details_btn = document.querySelector('.details_task_submit');
     details_btn.addEventListener('click', () => {
 
@@ -165,6 +184,8 @@ function submitDetailsBox(task_box, details_box, title, date_btn) {
 
     updateTaskBox(index, title);
     details_box.remove();
+
+    removeInactiveClass(trash, star);
     })
 }
 
@@ -186,17 +207,45 @@ export function createTaskDOM() {
     date_btn.classList.add('task_date');
     date_btn.textContent = `${currentProjectIndex.taskArray[currentArrayIndex].dueDate}`;
 
-
-    revealDetailsBox(details, task_box, title, date_btn);
-
     const trash = new Image();
     trash.src = Trash;
 
-    // if (currentProjectIndex.taskArray[currentArrayIndex].priority 
+    const star = document.createElement('div');
+    star.classList.add('star');
+    
     const emptyStar = new Image();
     emptyStar.src = empty_star;
+    emptyStar.classList.add('empty_star');
+    
+    const fullStar = new Image();
+    fullStar.src = FullStar;
+    fullStar.classList.add('full_star');
+    
+    if (currentProjectIndex.taskArray[currentArrayIndex].priority === true) {
+        star.appendChild(fullStar);
+    }
+    else {
+        star.appendChild(emptyStar);
+    }
 
-    button_container.appendChild(emptyStar);
+    star.addEventListener('click', () => {
+        if (currentProjectIndex.taskArray[currentArrayIndex].priority === true) {
+            star.removeChild(fullStar);
+            star.appendChild(emptyStar);
+            currentProjectIndex.taskArray[currentArrayIndex].priority = false;
+
+            console.log(currentProjectIndex.taskArray[currentArrayIndex]);
+        }
+        else {
+            star.removeChild(emptyStar);
+            star.appendChild(fullStar);
+            currentProjectIndex.taskArray[currentArrayIndex].priority = true;
+
+            console.log(currentProjectIndex.taskArray[currentArrayIndex]);
+        }
+    })
+
+    button_container.appendChild(star);
     button_container.appendChild(date_btn);
     button_container.appendChild(details);
     button_container.appendChild(trash);
@@ -209,7 +258,9 @@ export function createTaskDOM() {
     task_box.classList.add('task_box');
     title.classList.add('task_title');
     trash.classList.add('task_remove');
-    emptyStar.classList.add('empty_star');
+
+    revealDetailsBox(details, task_box, title, date_btn, trash, star);
+
     
     function assignObjToDOM() {
         const currentArrayIndex = currentProjectIndex.taskArray.length - 1;
@@ -242,21 +293,52 @@ export function createTaskDOMLoop(loopIndex) {
     const button_container = document.createElement('div');
     button_container.classList.add('task_button_container');
     
-    
-    // date_btn.textContent = `${currentProjectIndex.taskArray[loopIndex].dueDate}`;
-
     const details = document.createElement('div');
     details.textContent = "details";
     const date_btn = document.createElement('div');
     date_btn.classList.add('task_date');
     date_btn.textContent = `${currentProjectIndex.taskArray[loopIndex].dueDate}`;
 
-    revealDetailsBoxLoop(loopIndex, details, task_box, title, date_btn);
-
-
-
     const trash = new Image();
     trash.src = Trash;
+
+    const star = document.createElement('div');
+    star.classList.add('star');
+    
+    const emptyStar = new Image();
+    emptyStar.src = empty_star;
+    emptyStar.classList.add('empty_star');
+    
+    const fullStar = new Image();
+    fullStar.src = FullStar;
+    fullStar.classList.add('full_star');
+    
+    if (currentProjectIndex.taskArray[loopIndex].priority === true) {
+        star.appendChild(fullStar);
+    }
+    else {
+        star.appendChild(emptyStar);
+    }
+
+    star.addEventListener('click', () => {
+        if (currentProjectIndex.taskArray[loopIndex].priority === true) {
+            star.removeChild(fullStar);
+            star.appendChild(emptyStar);
+            currentProjectIndex.taskArray[loopIndex].priority = false;
+
+            console.log(currentProjectIndex.taskArray[loopIndex]);
+        }
+        else {
+            star.removeChild(emptyStar);
+            star.appendChild(fullStar);
+            currentProjectIndex.taskArray[loopIndex].priority = true;
+
+            console.log(currentProjectIndex.taskArray[loopIndex]);
+        }
+    })
+
+    button_container.appendChild(star);
+
     button_container.appendChild(date_btn);
     button_container.appendChild(details);
     button_container.appendChild(trash);
@@ -269,6 +351,9 @@ export function createTaskDOMLoop(loopIndex) {
     task_box.classList.add('task_box');
     title.classList.add('task_title');
     trash.classList.add('task_remove');
+
+    revealDetailsBoxLoop(loopIndex, details, task_box, title, date_btn, trash, star);
+
     
     function assignObjToDOMLoop() {
         currentProjectIndex.taskArray[loopIndex].myElement = task_box;
@@ -289,15 +374,15 @@ export function createTaskDOMLoop(loopIndex) {
     assignObjToDOMLoop();
 }
 
-function revealDetailsBoxLoop(loopIndex, variable, box, title, date_btn) {
+function revealDetailsBoxLoop(loopIndex, variable, box, title, date_btn, trash, star) {
     const btn = variable;
     btn.addEventListener('click', () => {
         if(!document.querySelector('.details_task_box')) {
-            createDetailsDOMLoop(loopIndex, box, title, date_btn)
+            createDetailsDOMLoop(loopIndex, box, title, date_btn, trash, star)
             populateDetailsBoxLoop(box);
-        }
 
-        console.log(projectArray);
+            addInactiveClass(trash, star);
+        }
     })
 }
 
@@ -311,10 +396,12 @@ function populateDetailsBoxLoop(task_box) {
     }        
 }
 
-function removeDetailsBoxLoop(box) {
+function removeDetailsBoxLoop(box, trash, star) {
     const btn = document.querySelector('.details_close_button');
     btn.addEventListener('click', () => {
         box.remove();
+
+        removeInactiveClass(trash, star);
     })
 }
 
@@ -323,7 +410,7 @@ function updateTaskBoxLoop(index, title) {
     title.textContent = `${currentProjectIndex.taskArray[index].title}`;
 }
 
-function createDetailsDOMLoop(loopIndex, afterChildDiv, title, date_btn) {
+function createDetailsDOMLoop(loopIndex, afterChildDiv, title, date_btn, trash, star) {
     if(!document.querySelector('.details_task_box')) {
         const details_task_box = document.createElement('div');
     
@@ -373,13 +460,13 @@ function createDetailsDOMLoop(loopIndex, afterChildDiv, title, date_btn) {
         parentDiv.insertBefore(details_task_box, afterChildDiv.nextSibling);
     
     
-        removeDetailsBoxLoop(details_task_box);
-        submitDetailsBoxLoop(afterChildDiv, details_task_box, title, date_btn);
+        removeDetailsBoxLoop(details_task_box, trash, star);
+        submitDetailsBoxLoop(afterChildDiv, details_task_box, title, date_btn, trash, star);
         
     }
 }
 
-function submitDetailsBoxLoop(task_box, details_box, title, date_btn) {
+function submitDetailsBoxLoop(task_box, details_box, title, date_btn, trash, star) {
     const details_btn = document.querySelector('.details_task_submit');
 
     details_btn.addEventListener('click', () => {
@@ -402,6 +489,7 @@ function submitDetailsBoxLoop(task_box, details_box, title, date_btn) {
     updateTaskBoxLoop(index, title);
 
     details_box.remove();
+    removeInactiveClass(trash, star);
     })
 }
 

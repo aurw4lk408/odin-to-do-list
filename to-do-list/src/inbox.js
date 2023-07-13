@@ -1,5 +1,8 @@
 import { projectArray, removeTasksFromScreen } from './project.js'
+import empty_star from './emptyStar.png'
+import FullStar from './fullStar.png'
 import Trash from './trash.png'
+import { addInactiveClass, removeInactiveClass } from './tasks.js';
 // import { revealDetailsBox } from './tasks.js';
 
 
@@ -36,10 +39,44 @@ function createTaskDOMInboxLoop(i, j) {
     date_btn.classList.add('task_date');
     date_btn.textContent = `${projectArray[i].taskArray[j].dueDate}`;
 
-    revealDetailsBoxInboxLoop(i, details, task_box, title, date_btn);
 
     const trash = new Image();
     trash.src = Trash;
+
+    const star = document.createElement('div');
+    star.classList.add('star');
+    
+    const emptyStar = new Image();
+    emptyStar.src = empty_star;
+    emptyStar.classList.add('empty_star');
+    
+    const fullStar = new Image();
+    fullStar.src = FullStar;
+    fullStar.classList.add('full_star');
+    
+    if (projectArray[i].taskArray[j].priority === true) {
+        star.appendChild(fullStar);
+    }
+    else {
+        star.appendChild(emptyStar);
+    }
+
+    star.addEventListener('click', () => {
+        if (projectArray[i].taskArray[j].priority === true) {
+            star.removeChild(fullStar);
+            star.appendChild(emptyStar);
+            projectArray[i].taskArray[j].priority = false;
+
+        }
+        else {
+            star.removeChild(emptyStar);
+            star.appendChild(fullStar);
+            projectArray[i].taskArray[j].priority = true;
+
+        }
+    })
+
+    button_container.appendChild(star);
     button_container.appendChild(date_btn);
     button_container.appendChild(details);
     button_container.appendChild(trash);
@@ -52,6 +89,9 @@ function createTaskDOMInboxLoop(i, j) {
     task_box.classList.add('task_box');
     title.classList.add('task_title');
     trash.classList.add('task_remove');
+
+    revealDetailsBoxInboxLoop(i, details, task_box, title, date_btn, trash, star);
+
     
     // function assignObjToDOMInbox() {
     //     projectArray[i].taskArray[j].myElement = task_box;
@@ -83,15 +123,15 @@ function createTaskDOMInboxLoop(i, j) {
 
 
 
-function revealDetailsBoxInboxLoop(i, variable, box, title, date_btn) {
+function revealDetailsBoxInboxLoop(i, variable, box, title, date_btn, trash, star) {
     const btn = variable;
     btn.addEventListener('click', () => {
         if(!document.querySelector('.details_task_box')) {
-            createDetailsDOMInboxLoop(i, box, title, date_btn)
+            createDetailsDOMInboxLoop(i, box, title, date_btn, trash, star)
             populateDetailsBoxInboxLoop(i, box);
-        }
 
-        console.log(projectArray);
+            addInactiveClass(trash, star);
+        }
     })
 }
 
@@ -105,10 +145,12 @@ function populateDetailsBoxInboxLoop(i, task_box) {
     }
 }
 
-function removeDetailsBoxInboxLoop(box) {
+function removeDetailsBoxInboxLoop(box, trash, star) {
     const btn = document.querySelector('.details_close_button');
     btn.addEventListener('click', () => {
         box.remove();
+
+        removeInactiveClass(trash, star);
     })
 }
 
@@ -117,7 +159,7 @@ function updateTaskBoxInboxLoop(i, index, title) {
     title.textContent = `${projectArray[i].taskArray[index].title}`;
 }
 
-function createDetailsDOMInboxLoop(i, afterChildDiv, title, date_btn) {
+function createDetailsDOMInboxLoop(i, afterChildDiv, title, date_btn, trash, star) {
     if(!document.querySelector('.details_task_box')) {
         const details_task_box = document.createElement('div');
     
@@ -167,13 +209,13 @@ function createDetailsDOMInboxLoop(i, afterChildDiv, title, date_btn) {
         parentDiv.insertBefore(details_task_box, afterChildDiv.nextSibling);
     
     
-        removeDetailsBoxInboxLoop(details_task_box);
-        submitDetailsBoxInboxLoop(i, afterChildDiv, details_task_box, title, date_btn);
+        removeDetailsBoxInboxLoop(details_task_box, trash, star);
+        submitDetailsBoxInboxLoop(i, afterChildDiv, details_task_box, title, date_btn, trash, star);
         
     }
 }
 
-function submitDetailsBoxInboxLoop(i, task_box, details_box, title, date_btn) {
+function submitDetailsBoxInboxLoop(i, task_box, details_box, title, date_btn, trash, star) {
     const details_btn = document.querySelector('.details_task_submit');
 
     details_btn.addEventListener('click', () => {
@@ -196,5 +238,6 @@ function submitDetailsBoxInboxLoop(i, task_box, details_box, title, date_btn) {
     updateTaskBoxInboxLoop(i, index, title);
 
     details_box.remove();
+    removeInactiveClass(trash, star);
     })
 }

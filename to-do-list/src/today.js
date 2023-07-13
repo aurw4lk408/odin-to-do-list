@@ -1,4 +1,8 @@
 import { projectArray, removeTasksFromScreen } from "./project";
+import empty_star from './emptyStar.png'
+import FullStar from './fullStar.png'
+import { addInactiveClass, removeInactiveClass } from './tasks.js';
+
 import Trash from './trash.png'
 
 
@@ -13,8 +17,6 @@ export function selectToday() {
         const currentDate = new Date().toISOString().split('T')[0];
 
         let todayArray = createTodayArray(initial_todayArray);
-
-        console.log(todayArray);
 
         for(let i = 0; i < todayArray.length; i++) {
             for(let j = 0; j < todayArray[i].taskArray.length; j++) {
@@ -68,10 +70,61 @@ export function createTaskDOMTodayLoop(targetDate, todayArray, i, j) {
     date_btn.classList.add('task_date');
     date_btn.textContent = `${todayArray[i].taskArray[j].dueDate}`;
 
-    revealDetailsBoxTodayLoop(targetDate, todayArray, i, j, details, task_box, title, date_btn);
 
     const trash = new Image();
     trash.src = Trash;
+
+    const star = document.createElement('div');
+    star.classList.add('star');
+    
+    const emptyStar = new Image();
+    emptyStar.src = empty_star;
+    emptyStar.classList.add('empty_star');
+    
+    const fullStar = new Image();
+    fullStar.src = FullStar;
+    fullStar.classList.add('full_star');
+    
+    if (todayArray[i].taskArray[j].priority === true) {
+        star.appendChild(fullStar);
+    }
+    else {
+        star.appendChild(emptyStar);
+    }
+
+    star.addEventListener('click', () => {
+        const index = todayArray[i].taskArray.findIndex(newTask => newTask.myElement === task_box);
+        const changedObject = todayArray[i].taskArray[index];
+
+        if (todayArray[i].taskArray[index].priority === true) {
+            star.removeChild(fullStar);
+            star.appendChild(emptyStar);
+            todayArray[i].taskArray[index].priority = false;
+
+            for (let i = 0; i < projectArray.length; i++) {
+                for (let j = 0; j < projectArray[i].taskArray.length; j++) {
+                    if (changedObject.id_value === projectArray[i].taskArray[j].id_value) {
+                        projectArray[i].taskArray[j].priority = false;
+                    }
+                }
+            }
+        }
+        else {
+            star.removeChild(emptyStar);
+            star.appendChild(fullStar);
+            todayArray[i].taskArray[index].priority = true;
+
+            for (let i = 0; i < projectArray.length; i++) {
+                for (let j = 0; j < projectArray[i].taskArray.length; j++) {
+                    if (changedObject.id_value === projectArray[i].taskArray[j].id_value) {
+                        projectArray[i].taskArray[j].priority = true;
+                    }
+                }
+            }
+        }
+    })
+
+    button_container.appendChild(star);
     button_container.appendChild(date_btn);
     button_container.appendChild(details);
     button_container.appendChild(trash);
@@ -84,6 +137,9 @@ export function createTaskDOMTodayLoop(targetDate, todayArray, i, j) {
     task_box.classList.add('task_box');
     title.classList.add('task_title');
     trash.classList.add('task_remove');
+
+    revealDetailsBoxTodayLoop(targetDate, todayArray, i, j, details, task_box, title, date_btn, trash, star);
+
     
     // function assignObjToDOMToday() {
     //     projectArray[i].taskArray[j].myElement = task_box;
@@ -125,15 +181,15 @@ export function createTaskDOMTodayLoop(targetDate, todayArray, i, j) {
 
 
 
-function revealDetailsBoxTodayLoop(targetDate, todayArray, i, j, variable, box, title, date_btn) {
+function revealDetailsBoxTodayLoop(targetDate, todayArray, i, j, variable, box, title, date_btn, trash, star) {
     const btn = variable;
     btn.addEventListener('click', () => {
         if(!document.querySelector('.details_task_box')) {
-            createDetailsDOMTodayLoop(targetDate, todayArray, i, j, box, title, date_btn);
+            createDetailsDOMTodayLoop(targetDate, todayArray, i, j, box, title, date_btn, trash, star);
             populateDetailsBoxTodayLoop(todayArray, i, j, box);
-        }
 
-        console.log(todayArray);
+            addInactiveClass(trash, star);
+        }
     })
 }
 
@@ -149,10 +205,12 @@ function populateDetailsBoxTodayLoop(todayArray, i, j, task_box) {
 }
 
 
-function removeDetailsBoxTodayLoop(box) {
+function removeDetailsBoxTodayLoop(box, trash, star) {
     const btn = document.querySelector('.details_close_button');
     btn.addEventListener('click', () => {
         box.remove();
+
+        removeInactiveClass(trash, star);
     })
 }
 
@@ -161,7 +219,7 @@ function updateTaskBoxTodayLoop(todayArray, i, index, title) {
     title.textContent = `${todayArray[i].taskArray[index].title}`;
 }
 
-function createDetailsDOMTodayLoop(targetDate, todayArray, i, j, afterChildDiv, title, date_btn) {
+function createDetailsDOMTodayLoop(targetDate, todayArray, i, j, afterChildDiv, title, date_btn, trash, star) {
     if(!document.querySelector('.details_task_box')) {
         const details_task_box = document.createElement('div');
     
@@ -211,13 +269,13 @@ function createDetailsDOMTodayLoop(targetDate, todayArray, i, j, afterChildDiv, 
         parentDiv.insertBefore(details_task_box, afterChildDiv.nextSibling);
     
     
-        removeDetailsBoxTodayLoop(details_task_box);
-        submitDetailsBoxTodayLoop(targetDate, todayArray, i, j, afterChildDiv, details_task_box, title, date_btn);
+        removeDetailsBoxTodayLoop(details_task_box, trash, star);
+        submitDetailsBoxTodayLoop(targetDate, todayArray, i, j, afterChildDiv, details_task_box, title, date_btn, trash, star);
         
     }
 }
 
-function submitDetailsBoxTodayLoop(targetDate, todayArray, i, j, task_box, details_box, title, date_btn) {
+function submitDetailsBoxTodayLoop(targetDate, todayArray, i, j, task_box, details_box, title, date_btn, trash, star) {
     const details_btn = document.querySelector('.details_task_submit');
 
     details_btn.addEventListener('click', () => {
@@ -247,6 +305,7 @@ function submitDetailsBoxTodayLoop(targetDate, todayArray, i, j, task_box, detai
 
     details_box.remove();
     removeTasksFromScreen();
+    removeInactiveClass(trash, star);
 
     for(let i = 0; i < todayArray.length; i++) {
         for(let j = 0; j < todayArray[i].taskArray.length; j++) {
