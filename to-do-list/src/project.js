@@ -1,10 +1,12 @@
 import Dots from './dot.png'
 import Plus from './plus.png'
 import List from './list.png'
-import { createNewTask, createTaskDOM, createTaskDOMLoop } from './tasks';
+import { createNewTask, createTaskDOMLoop } from './tasks';
 
 export let projectArray = [];
 let turn_counter = 1;
+
+
 
 //add new project text
 export function addProjectDOM(className, text) {
@@ -22,20 +24,34 @@ export function addProjectDOM(className, text) {
     document.querySelector('.sidebar_projects').appendChild(add_project);
 }
 
-// function newProjectDOM(text) {
-//     const add_project = document.createElement('div');
-//     add_project.classList.add('new_project');
+function renameProjectBox(add_project) {
+    const box = document.createElement('div');
+    const input = document.createElement('input');
+    input.setAttribute("type", "text");
+    box.appendChild(input);
 
-//     const picture = new Image();
-//     picture.src = Dots;
-//     add_project.appendChild(picture);
+    const btn_container = document.createElement('div');
+    const add_btn = document.createElement('div');
+    const cancel = document.createElement('div');
 
-//     const project_text = document.createElement('p');
-//     project_text.textContent = text;
-//     add_project.appendChild(project_text);
-//     document.querySelector('.sidebar_projects').appendChild(add_project);
-// }
+    add_btn.textContent = "Rename";
+    cancel.textContent = "Cancel";
 
+    btn_container.appendChild(add_btn);
+    btn_container.appendChild(cancel);
+    box.appendChild(btn_container);
+
+    const parentDiv = document.querySelector('.sidebar_projects');
+    parentDiv.insertBefore(box, add_project.nextSibling);
+
+    box.classList.add('rename_project_box');
+    input.classList.add('rename_project_input');
+    btn_container.classList.add('rename_project_btn_container');
+    add_btn.classList.add('rename_project_add_btn');
+    cancel.classList.add('rename_project_cancel_btn');
+
+    return { add_btn, cancel, box, input };
+}
 
 //add new project - turn into button
 export function addProject() {
@@ -118,25 +134,97 @@ export function makeProjectArray() {
         project_left_container.appendChild(project_text);
         project_left_container.classList.add('project_left_container');
 
+        const dot_container = document.createElement('div');
         const picture1 = new Image();
         picture1.src = Dots;
         picture1.classList.add('dot');
+        dot_container.append(picture1);
+        dot_container.classList.add('dot_container');
         
         add_project.appendChild(project_left_container);
-        add_project.appendChild(picture1);
+        add_project.appendChild(dot_container);
         document.querySelector('.sidebar_projects').insertBefore(add_project, document.querySelector('.add_project'));
-
-        // document.querySelector('.sidebar_projects').appendChild(add_project);
 
         //asign project to DOM
         project.myElement = add_project;
 
+        dot_container.addEventListener('click', (event) => {
+            event.stopPropagation();
+
+            if (!document.querySelector('.edit_window')) {
+                const edit_window = document.createElement('div');
+                const rename = document.createElement('div');
+                rename.textContent = "Edit"
+    
+                const remove = document.createElement('div');
+                remove.textContent = "Remove";
+    
+                rename.classList.add('rename_window');
+                remove.classList.add('remove_window');
+                edit_window.classList.add('edit_window');
+    
+                edit_window.append(rename, remove);
+                dot_container.append(edit_window);
+
+                rename.addEventListener('click', () => {
+                    const buttons = renameProjectBox(add_project)
+
+                    const project_box = buttons.box;
+                    const add_btn = buttons.add_btn;
+                    const cancel = buttons.cancel;
+                    const input = buttons.input;
+
+                    add_btn.addEventListener('click', () => {
+                        const index = projectArray.findIndex(project => project.myElement === add_project);
+
+                        if (index !== -1) {
+                            const renamedProject = projectArray[index];
+                            renamedProject.name = input.value;
+                            project_text.textContent = input.value;
+                            document.querySelector('.mainbar_heading').textContent = input.value;
+
+                            console.log(projectArray);
+                            project_box.remove();
+                        }
+                    })
+
+                    cancel.addEventListener('click', () => {
+                        project_box.remove();
+                    })
+                    // edit_window.remove();
+                })
+
+                remove.addEventListener('click', () => {
+                    const index = projectArray.findIndex(project => project.myElement === add_project);
+                    if (index !== -1) {
+                        const removedProject = projectArray.splice(index, 1)[0];
+                        removedProject.myElement.remove();
+                        removeTasksFromScreen();
+                        document.querySelector('.mainbar_heading').textContent = "Select a project!"
+                    }
+                })
+
+                document.addEventListener('click', (event) => {
+                    const clickedElement = event.target;
+                    const edit_window = document.querySelector('.edit_window');
+                    if ((edit_window && clickedElement !== edit_window) && !edit_window.contains(clickedElement)) {
+                      edit_window.remove();
+                    }
+                  });            
+            }
+            else {
+                document.querySelector('.edit_window').remove();
+            }
+        })
+
         function selectProject() {
             add_project.addEventListener('click', () => {
                 document.querySelector('.mainbar_btn').classList.add('active');
-                document.querySelector('.mainbar_heading').textContent = text;
 
                 const index = projectArray.findIndex(project => project.myElement === add_project);
+
+                document.querySelector('.mainbar_heading').textContent = `${projectArray[index].name}`;
+
                 if (index !== -1) {
                     currentProjectIndex = projectArray[index];
                 }

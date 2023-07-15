@@ -53,7 +53,7 @@ h2 {
     border-radius: 0.4rem;
 }
 
-.star:hover, .task_remove:hover, .task_details:hover, .all_tasks:hover, .today:hover, .week:hover, .important:hover, .add_project:hover, .project_left_container:hover, .dot:hover {
+.star:hover, .task_remove:hover, .task_details:hover, .all_tasks:hover, .today:hover, .week:hover, .important:hover, .add_project:hover, .new_project:hover {
     background-color:#abb2ba;
     transition: 200ms ease-in-out;
 }
@@ -72,6 +72,12 @@ h2 {
     background-color: #e4e9ed;
     gap: 1em;
     border-right: 2px solid #075985;
+    transition: 200ms ease-in-out;
+}
+
+.sidebar.inactive {
+    display: none;
+    transition: 200ms ease-in-out;
 }
 
 .project_left_container {
@@ -88,7 +94,10 @@ h2 {
     gap: 0.4em;
     cursor: pointer;
     border-radius: 0.4rem;
+
 }
+
+
 
 .new_project {
     justify-content: space-between;
@@ -100,31 +109,31 @@ h2 {
     justify-content: center;
 }
 
-.project_box {
+.project_box, .rename_project_box {
     z-index: 10;
     background-color:#cbd5e1;
     display: flex;
     flex-direction: column;
     gap: 0.5em;
+
+    animation-name: slideIn;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
 }
 
-.project_box.active {
-    transform: scale(1);
-}
-
-.project_input {
+.project_input, .rename_project_input {
     background-color: white;
     border-radius: 0.2em;
     border: transparent;
     height: 1.8em;
 }
 
-.project_btn_container {
+.project_btn_container, .rename_project_btn_container {
     display: flex;
     gap: 1em;
 }
 
-.project_add_btn {
+.project_add_btn, .rename_project_add_btn {
     background-color: #4ade80;
     display: flex;
     flex: 1;
@@ -135,12 +144,12 @@ h2 {
     cursor: pointer;
 }
 
-.project_add_btn:hover {
+.project_add_btn:hover, .rename_project_add_btn:hover {
     background-color: #40be6e;
     transition: 200ms ease-in-out;
 }
 
-.project_cancel_btn {
+.project_cancel_btn, .rename_project_cancel_btn {
     background-color: #fb7185;
     flex: 1;
     display: flex;
@@ -151,7 +160,7 @@ h2 {
     cursor: pointer;
 }
 
-.project_cancel_btn:hover {
+.project_cancel_btn:hover, .rename_project_cancel_btn:hover {
     background-color: #e06275;
     transition: 200ms ease-in-out;
 }
@@ -230,7 +239,44 @@ h2 {
     padding: 0.5rem 1.5rem;
     background-color: rgb(244, 244, 244);
     border-radius: 0.4em;
-    border: 2px solid #075985
+    border: 2px solid #075985;
+
+
+    animation-name: slideIn;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(0%);
+
+      /* top: -100px; */
+      opacity: 0;
+    }
+    to {
+        transform: translateX(0%);
+
+      /* top: 0; */
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+        height: 0;
+      /* top: -100px; */
+      /* opacity: 0; */
+    }
+    to {
+        height: 100%;
+      /* top: 0; */
+      /* opacity: 1; */
+    }
+  }
+
+.task_box.animate {
+    transform: scale(1);
 }
 
 .task_content_heading {
@@ -391,7 +437,7 @@ h2 {
     border-radius: 0.4rem;
 }
 
-.task_remove, .list, .plus, .dot {
+.task_remove, .list, .plus {
     cursor: pointer;
     height: 20px;
     width: 20px;
@@ -421,9 +467,65 @@ h2 {
 }
 
 .dot {
-    margin-right: 0.5em;
-    /* height: 100%; */
+    /* margin-right: 0.5em; */
+    /* padding: 0.8rem 0.6rem; */
+    height: 20px;
+    width: 20px;
 }
+
+.dot_container {
+    position: relative;
+    height: 100%;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+}
+
+.edit_window {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    bottom: 100%;
+    z-index: 10;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+    right: 1rem;
+    background-color:#075985;
+
+    animation-name: slideUp;
+    animation-duration: 0.2s;
+    animation-fill-mode: forwards;
+}
+
+.rename_window {
+    color: white;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+}
+
+.rename_window:hover, .remove_window:hover {
+    background-color:#aeb6c0;
+}
+
+.remove_window {
+    color: white;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+}
+
+@keyframes slideUp {
+    from {
+        /* height: 0; */
+      /* bottom: 0; */
+      opacity: 0;
+    }
+    to {
+        /* height: 100%; */
+      /* bottom: 100%; */
+      opacity: 1;
+    }
+  }
+
+
 
 #overlay {
     position: fixed;
@@ -459,10 +561,22 @@ h2 {
     justify-content: center;
     background-color: #dfe5eb;
     border-radius: 0.5rem;
+
+    animation-name: slideDown;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
 }
 
-.details_task_box.active {
-    animation: fade-in 500ms forwards;
+.details_container {
+    animation-name: slideDown;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+.parent_task_submit {
+    animation-name: slideIn;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
 }
 
 .details_close_button {

@@ -49,7 +49,8 @@ function addSubmitButton() {
         createNewTask();
         createTaskDOM();
         removeTaskBox();
-        console.log(projectArray);
+
+        document.querySelector('.task_box').classList.add('animate');
     })
 }
 
